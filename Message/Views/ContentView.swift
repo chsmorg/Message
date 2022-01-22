@@ -7,10 +7,10 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     //@ObservedObject var userDetails: UserDetails = UserDetails()
     @ObservedObject var loggedIn: LoggedIn = LoggedIn()
-    
     var body: some View {
         if (!FireBaseAuth.validateAuth()){
             NavigationView{
@@ -26,6 +26,7 @@ struct ContentView: View {
         
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

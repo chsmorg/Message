@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import GoogleSignIn
+import Firebase
 
 enum Field: Hashable{
     case username
     case password
     case email
 }
+
+
+
 
 struct LoginView: View {
     //@ObservedObject var userDetails: UserDetails
@@ -92,6 +97,15 @@ struct LoginView: View {
                 }
             }
             HStack{
+                Button(action: {
+                    handleGoogleLogin()
+                },label: {
+                    Image("google").resizable().frame(width: 50, height: 50).scaledToFit()
+                        
+
+                }).padding()
+            }
+            HStack{
                 Text("Don't have an account?")
                 NavigationLink(destination: RegView()){
                     Text("Sign Up")
@@ -102,6 +116,57 @@ struct LoginView: View {
                                                  design: .rounded)).foregroundColor(Color(UIColor.lightGray))
             
         }.navigationBarTitle("LOGIN",displayMode: .inline)
+        
+    }
+    
+    
+    func handleGoogleLogin(){
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+        // Create Google Sign In configuration object.
+        let config = GIDConfiguration(clientID: clientID)
+        
+        GIDSignIn.sharedInstance.signIn(with: config, presenting: getRootViewController()){[self] user, error in
+            if let error = error {
+                errorText = error.localizedDescription
+                return
+              }
+
+              guard
+                let authentication = user?.authentication,
+                let idToken = authentication.idToken
+              else {
+                return
+              }
+
+              let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                             accessToken: authentication.accessToken)
+            
+            Auth.auth().signIn(with: credential){
+                result, err in
+                if let error = err{
+                    errorText = error.localizedDescription
+                    return
+                }
+                else{
+                    loggedIn.loggedIn = true
+                }
+                
+            }
+
+        }
+        
+    }
+}
+extension View{
+    func getRootViewController()->UIViewController{
+        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else{
+            return .init()
+        }
+        guard let root = screen.windows.first?.rootViewController else{
+            return .init()
+        }
+        return root
         
     }
 }

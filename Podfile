@@ -6,9 +6,7 @@ target 'Message' do
   use_frameworks!
 
   # Pods for Message
-  pod 'Firebase/Core'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Database'
+
 
   target 'MessageTests' do
     inherit! :search_paths
