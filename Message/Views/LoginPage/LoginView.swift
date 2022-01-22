@@ -26,6 +26,7 @@ struct LoginView: View {
     @State private var emailInput = ""
     @State private var passwordInput = ""
     @State private var errorText = ""
+    @State private var validEmail: Bool = false
     
     
     
@@ -149,7 +150,25 @@ struct LoginView: View {
                     return
                 }
                 else{
+                    
+                    DBManager.shared.emailValidation(with: (result?.user.email)!, completion: { authResult in
+                        
+                        if(authResult == true){
+                           validEmail = true
+                        }
+                        else{
+                            validEmail = false
+                        }
+                    })
+                    if(!validEmail){
+                        let userEmail = result?.user.email!.replacingOccurrences(of: ".", with: "-")
+                        //print(userEmail)
+                       // print(result?.user.displayName)
+                        DBManager.shared.newUser(with: MessageUser(username: (result?.user.displayName)!, email: userEmail!))
+                        
+                    }
                     loggedIn.loggedIn = true
+                    
                 }
                 
             }

@@ -17,8 +17,7 @@ final class DBManager{
 //account managment
 extension DBManager{
     public func emailValidation(with email: String, completion: @escaping ((Bool)-> Void)){
-        var userEmail = email.replacingOccurrences(of: "@", with: "-")
-        userEmail = email.replacingOccurrences(of: ".", with: "_")
+        let userEmail = email.replacingOccurrences(of: ".", with: "-")
         
         database.child(userEmail).observeSingleEvent(of: .value, with: {snapshot in
             guard snapshot.value as? String != "null" else {
@@ -44,8 +43,7 @@ struct MessageUser {
     
     var userEmail:String{
         
-        var userEmail = email.replacingOccurrences(of: "@", with: "-")
-        userEmail = email.replacingOccurrences(of: ".", with: "_")
+        let userEmail = email.replacingOccurrences(of: ".", with: "-")
         return userEmail
     }
     
