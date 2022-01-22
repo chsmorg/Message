@@ -8,5 +8,5 @@
 import Foundation
 
 class AppDetails: ObservableObject {
-    @Published  var version = "0.0.0.1"
+    @Published  var version = "0.0.0.3"
 }
