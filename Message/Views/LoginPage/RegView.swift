@@ -73,24 +73,6 @@ struct RegView: View {
                     }
                     
                     
-                   
-                   
-                   
-                    
-    
-                    
-                    
-//                        FirebaseAuth.Auth.auth().createUser(withEmail: emailInput, password: passwordInput, completion: {authResult, error in
-//                            guard let result = authResult, error == nil else{
-//                                print("user creation failed")
-//                                return
-//                            }
-//                            let user = result.user
-//                            print("account created: \(user)")
-//                        })
-                
-                    
-                    
                 },label: {
                     Text("Create Account").padding()
                         .foregroundColor(.black)

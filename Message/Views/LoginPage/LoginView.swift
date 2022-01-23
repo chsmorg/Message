@@ -110,7 +110,7 @@ struct LoginView: View {
                 Text("Don't have an account?")
                 NavigationLink(destination: RegView()){
                     Text("Sign Up")
-                }
+                }.foregroundColor(Color(.cyan))
             }.padding()
             Text("Version 0.0.0.1").font(.system(size:8,
                                                  weight: .regular,

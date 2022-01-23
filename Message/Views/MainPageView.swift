@@ -10,30 +10,42 @@ import SwiftUI
 struct MainPageView: View {
     @State private var errorText = ""
     @ObservedObject var loggedIn: LoggedIn
+    @ObservedObject var userDetails: UserDetails = UserDetails()
     @State var currentUser = FireBaseAuth.getEmail()!
     var body: some View {
         VStack{
-            Button(action: {
-                    FireBaseAuth.logout(){authResult in
-                        switch authResult {
-                        case .failure(let error):
-                            errorText = error.localizedDescription
-                        case .success( _):
-                            print("Account Login successful")
-                            loggedIn.loggedIn = false
-                        }
-                    }  
-            },label: {
-                Text("Logout").padding()
-                    .foregroundColor(.black)
-                    .background (.cyan)
-                    .cornerRadius(15)
-                    
-
-            }).padding()
             Text("Current User: \(currentUser)")
-        }
-       
-    }
+            ChatView(userDetails: userDetails)
+            
+            
+            
+            
+            
+            
+        }.navigationBarTitle("Messages",displayMode: .inline)
+            .navigationBarItems(leading:
+                            HStack {
+                NavigationLink(destination: ProfileView(loggedIn: loggedIn,userDetails: userDetails)){
+                                        Image(systemName: "square.and.pencil")
+                    
+                                    }.foregroundColor(Color(.cyan))
+                            }, trailing:
+                            HStack {
+                                NavigationLink(destination: ProfileView(loggedIn: loggedIn,userDetails: userDetails)){
+                                        Image(systemName: "person")
+                    
+                                        }.foregroundColor(Color(.cyan))
+                                })
+                        }
+}
+
+struct Convo{
+    var senderUserName: String
+}
+
+private func fetchConvos() -> [Convo]{
+    let convos: [Convo] = []
+    
+    return convos
 }
 

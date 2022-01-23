@@ -83,6 +83,12 @@ struct FireBaseAuth {
     static func getEmail() -> String? {
         return Auth.auth().currentUser?.email
     }
+    static func getUserName() -> String? {
+        return Auth.auth().currentUser?.displayName
+    }
+    static func getUserID() -> String? {
+        return Auth.auth().currentUser?.uid
+    }
     
     static func authenticate(withEmail email :String,
                              password:String,

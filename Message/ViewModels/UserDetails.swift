@@ -9,5 +9,9 @@ import Foundation
 
 
 class UserDetails: ObservableObject {
-    @Published  var loggedIn = false
+    @Published var notificationsEnabled: Bool = true
+    @Published var preview: Bool = true
+    @Published var userEmail: String = FireBaseAuth.getEmail() ?? ""
+    @Published var userID: String = FireBaseAuth.getUserID() ?? ""
+    @Published var username: String = FireBaseAuth.getUserName() ?? ""
 }
