@@ -16,7 +16,6 @@ struct RegView: View {
     @State private var usernameInput = ""
     @State private var passwordInput = ""
     @State private var errorText = ""
-    @State private var vaildEmail: Bool = false
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         VStack{
@@ -41,26 +40,28 @@ struct RegView: View {
             HStack{
                 
                 Button(action: {
+                    if(!emailInput.isEmpty && !usernameInput.isEmpty && !passwordInput.isEmpty){
                     DBManager.shared.emailValidation(with: emailInput, completion: { authResult in
-                        print(authResult)
+                        print("auth result = \(authResult)")
                         if(authResult == true){
-                            vaildEmail = true
-                        }
-                        else{
-                            vaildEmail = false
-                            errorText = "Email has already been taken"
-                        
-                        }
-                    })
-                    if(vaildEmail){
-                        if(!emailInput.isEmpty && !usernameInput.isEmpty && !passwordInput.isEmpty){
                             FireBaseAuth.createUser(withEmail: emailInput, username: usernameInput, password: passwordInput) {authResult in
                                 switch authResult {
                                 case .failure(let error):
                                     errorText = error.localizedDescription
                                 case .success( _):
                                     print("Account creation successful")
-                                    DBManager.shared.newUser(with: MessageUser(username: usernameInput, email: emailInput))
+                                    let account = MessageUser(username: usernameInput, email: emailInput)
+                                    DBManager.shared.newUser(with: account)
+                                    DBManager.shared.insertUser(with: account, completion: { authResult in
+                                        
+                                        if(authResult == true){
+                                            
+                                        }
+                                        else{
+                                            errorText = "Error creating account."
+                                            return
+                                        }
+                                    })
                                         
                                     
                                     self.presentationMode.wrappedValue.dismiss()
@@ -68,8 +69,13 @@ struct RegView: View {
                             }
                         }
                         else{
-                            errorText = "Fill all fields to create a new account"
+                            errorText = "Email has already been taken."
+                        
                         }
+                    })
+                    }
+                    else{
+                        errorText = "Fill all boxs to create an account."
                     }
                     
                     

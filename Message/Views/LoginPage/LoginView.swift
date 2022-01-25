@@ -26,7 +26,7 @@ struct LoginView: View {
     @State private var emailInput = ""
     @State private var passwordInput = ""
     @State private var errorText = ""
-    @State private var validEmail: Bool = false
+    
     
     
     
@@ -150,24 +150,35 @@ struct LoginView: View {
                     return
                 }
                 else{
+                    if(FireBaseAuth.validateAuth()){
+                        loggedIn.loggedIn = true
+                        return
+                    }
+                    @State var validEmail: Bool = false
+                    let userEmail = result?.user.email!.replacingOccurrences(of: ".", with: "-")
                     
-                    DBManager.shared.emailValidation(with: (result?.user.email)!, completion: { authResult in
-                        
+                    DBManager.shared.emailValidation(with: userEmail!, completion: { authResult in
+                        errorText = String(authResult)
                         if(authResult == true){
-                           validEmail = true
+                            let userEmail = result?.user.email!.replacingOccurrences(of: ".", with: "-")
+                            let account = MessageUser(username: (result?.user.displayName)!, email: userEmail!)
+                            DBManager.shared.newUser(with: account)
+                            DBManager.shared.insertUser(with: account, completion: { authResult in
+                                
+                                if(authResult == true){
+                                    loggedIn.loggedIn = true
+                                }
+                                else{
+                                    errorText = "Error adding account."
+                                }
+                            })
                         }
                         else{
-                            validEmail = false
+                            errorText = "Error creating account."
+                            return
                         }
                     })
-                    if(!validEmail){
-                        let userEmail = result?.user.email!.replacingOccurrences(of: ".", with: "-")
-                        //print(userEmail)
-                       // print(result?.user.displayName)
-                        DBManager.shared.newUser(with: MessageUser(username: (result?.user.displayName)!, email: userEmail!))
-                        
-                    }
-                    loggedIn.loggedIn = true
+                    
                     
                 }
                 

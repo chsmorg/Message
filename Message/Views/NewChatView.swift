@@ -9,12 +9,29 @@ import SwiftUI
 
 struct NewChatView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Form{
+            Section(header: Text("Users")){
+                    
+                
+            }
+        }
     }
 }
 
-struct NewChatView_Previews: PreviewProvider {
-    static var previews: some View {
-        NewChatView()
+struct UserView{
+    var userName: String
+    var body: some View{
+        HStack {
+                Text(userName)
+                Spacer()
+                Button(action: {
+                
+            
+            }, label: {
+                Image(systemName: "plus.message").foregroundColor(.cyan)
+            })
+            }
     }
 }
+
+

@@ -20,11 +20,18 @@ extension DBManager{
         let userEmail = email.replacingOccurrences(of: ".", with: "-")
         
         database.child(userEmail).observeSingleEvent(of: .value, with: {snapshot in
-            guard snapshot.value as? String != "null" else {
-                completion(false)
-                return
+           // print(snapshot.value  as? NSDictionary)
+           // print(userEmail)
+            let value = snapshot.value as? NSDictionary
+            if(value == nil){
+                completion(true)
+                
             }
-            completion(true)
+            else{
+                completion(false)
+                
+            }
+            return
         })
         
     }
@@ -34,6 +41,43 @@ extension DBManager{
             "username": user.username,
             "email": user.email
         ])
+        
+    }
+    public func insertUser(with user: MessageUser, completion: @escaping ((Bool)-> Void)){
+        self.database.child("users").observeSingleEvent(of: .value, with: {snapshot in
+            
+            if var usersCollection = snapshot.value as? [[String: String]] {
+                let newElement = ["username": user.username,
+                                  "email": user.userEmail
+                                 ]
+                usersCollection.append(newElement)
+                
+                self.database.child("users").setValue(usersCollection, withCompletionBlock: {
+                    error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                })
+            }
+            else{
+                let newCollection: [[String: String]] =
+                    [["username": user.username,
+                     "email": user.userEmail
+                    ]]
+                    self.database.child("users").setValue(newCollection, withCompletionBlock: {
+                        error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+                    })
+                
+            }
+            completion(true)
+            
+            
+        })
     }
 }
 
